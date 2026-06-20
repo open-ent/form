@@ -1,5 +1,5 @@
-import { useEdificeClient, useWorkspaceFile } from "@edifice.io/react";
-import { MediaLibrary, MediaLibraryRef } from "@edifice.io/react/multimedia";
+import { useEdificeClient, useWorkspaceFile } from "@open-ent/react";
+import { MediaLibrary, MediaLibraryRef } from "@open-ent/react/multimedia";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import CreateIcon from "@mui/icons-material/Create";
 import DeleteIcon from "@mui/icons-material/Delete";

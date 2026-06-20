@@ -1,6 +1,6 @@
 import { Box } from "@cgi-learning-hub/ui";
-import { Button, FormControl } from "@edifice.io/react";
-import { IconSave } from "@edifice.io/react/icons";
+import { Button, FormControl } from "@open-ent/react";
+import { IconSave } from "@open-ent/react/icons";
 import { Ref } from "react";
 import { useTranslation } from "react-i18next";
 

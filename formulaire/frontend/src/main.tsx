@@ -1,9 +1,9 @@
-import "@edifice.io/bootstrap/dist/index.css";
+import "@open-ent/bootstrap/dist/index.css";
 import "react-toastify/dist/ReactToastify.css";
 
 import { ThemeProvider as ThemeProviderCGI, ThemeProviderProps } from "@cgi-learning-hub/theme";
 import { GlobalStyles } from "@cgi-learning-hub/ui";
-import { EdificeClientProvider, EdificeThemeProvider } from "@edifice.io/react";
+import { EdificeClientProvider, EdificeThemeProvider } from "@open-ent/react";
 import { QueryCache, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import React, { useEffect } from "react";

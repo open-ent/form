@@ -1,5 +1,5 @@
 import { useMediaQuery } from "@cgi-learning-hub/ui";
-import { IUserInfo } from "@edifice.io/client";
+import { IUserInfo } from "@open-ent/client";
 import { createContext, FC, useContext, useMemo, useState } from "react";
 
 import { MOBILE_MAX_WIDTH, TABLET_MAX_WIDTH } from "~/core/constants";

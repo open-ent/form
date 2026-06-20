@@ -8,7 +8,7 @@ import {
   IconButton,
   Typography,
 } from "@cgi-learning-hub/ui";
-import { ID, PutShareResponse, RightStringified, ShareRight } from "@edifice.io/client";
+import { ID, PutShareResponse, RightStringified, ShareRight } from "@open-ent/client";
 import {
   Avatar,
   Button as EdificeButton,
@@ -17,8 +17,8 @@ import {
   LoadingScreen,
   Tooltip,
   VisuallyHidden,
-} from "@edifice.io/react";
-import { IconBookmark, IconInfoCircle, IconRafterDown } from "@edifice.io/react/icons";
+} from "@open-ent/react";
+import { IconBookmark, IconInfoCircle, IconRafterDown } from "@open-ent/react/icons";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { UseMutationResult } from "@tanstack/react-query";
 import { ReactNode, useState } from "react";

@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@cgi-learning-hub/ui";
-import { Editor } from "@edifice.io/react/editor";
+import { Editor } from "@open-ent/react/editor";
 import { FC } from "react";
 
 import { descriptionStyle, sectionContentStyle } from "~/components/CreationSection/style";

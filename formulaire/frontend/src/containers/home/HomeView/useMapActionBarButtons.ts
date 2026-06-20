@@ -1,4 +1,4 @@
-import { useEdificeClient } from "@edifice.io/react";
+import { useEdificeClient } from "@open-ent/react";
 import { useCallback, useMemo } from "react";
 
 import { MANAGER_RIGHT, TRASH_FOLDER_ID } from "~/core/constants";

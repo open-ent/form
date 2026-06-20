@@ -1,5 +1,5 @@
 import { Box } from "@cgi-learning-hub/ui";
-import { Editor } from "@edifice.io/react/editor";
+import { Editor } from "@open-ent/react/editor";
 import { FC } from "react";
 
 import { EditorMode, EditorVariant } from "~/core/enums";

@@ -1,7 +1,7 @@
 import { Box } from "@cgi-learning-hub/ui";
-import { ShareRight, ShareRightAction, ShareRightActionDisplayName, ShareRightWithVisibles } from "@edifice.io/client";
-import { Avatar, Button, Checkbox, IconButton } from "@edifice.io/react";
-import { IconBookmark, IconClose, IconRafterDown } from "@edifice.io/react/icons";
+import { ShareRight, ShareRightAction, ShareRightActionDisplayName, ShareRightWithVisibles } from "@open-ent/client";
+import { Avatar, Button, Checkbox, IconButton } from "@open-ent/react";
+import { IconBookmark, IconClose, IconRafterDown } from "@open-ent/react/icons";
 import { useTranslation } from "react-i18next";
 
 import { IForm } from "~/core/models/form/types";

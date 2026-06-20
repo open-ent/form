@@ -1,4 +1,4 @@
-import { IUserInfo } from "@edifice.io/client";
+import { IUserInfo } from "@open-ent/client";
 import { ReactNode } from "react";
 
 import { ModalType } from "~/core/enums";

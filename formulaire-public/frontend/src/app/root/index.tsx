@@ -1,4 +1,4 @@
-import { Layout, useEdificeClient } from "@edifice.io/react";
+import { Layout, useEdificeClient } from "@open-ent/react";
 import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 

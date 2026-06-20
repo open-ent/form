@@ -10,7 +10,7 @@ import {
   TextField,
   Typography,
 } from "@cgi-learning-hub/ui";
-import { Editor, EditorRef } from "@edifice.io/react/editor";
+import { Editor, EditorRef } from "@open-ent/react/editor";
 import GroupRoundedIcon from "@mui/icons-material/GroupRounded";
 import { FC, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";

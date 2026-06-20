@@ -1,4 +1,4 @@
-import { Layout, LoadingScreen, useEdificeClient } from "@edifice.io/react";
+import { Layout, LoadingScreen, useEdificeClient } from "@open-ent/react";
 import { Outlet } from "react-router-dom";
 
 import { HomeProvider } from "~/providers/HomeProvider";

@@ -1,4 +1,4 @@
-import { WorkspaceElement } from "@edifice.io/client";
+import { WorkspaceElement } from "@open-ent/client";
 
 import { PROTECTED_VISIBILITY, PUBLIC_VISIBILITY } from "~/core/constants";
 

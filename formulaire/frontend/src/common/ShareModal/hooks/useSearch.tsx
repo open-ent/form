@@ -6,9 +6,9 @@ import {
   ShareRightWithVisibles,
   ShareSubject,
   User,
-} from "@edifice.io/client";
-import { OptionListItemType, useDebounce, useIsAdml } from "@edifice.io/react";
-import { IconBookmark } from "@edifice.io/react/icons";
+} from "@open-ent/client";
+import { OptionListItemType, useDebounce, useIsAdml } from "@open-ent/react";
+import { IconBookmark } from "@open-ent/react/icons";
 import { ChangeEvent, Dispatch, useEffect, useReducer } from "react";
 import { useTranslation } from "react-i18next";
 

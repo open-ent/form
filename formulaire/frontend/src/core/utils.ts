@@ -1,4 +1,4 @@
-import { IUserInfo } from "@edifice.io/client";
+import { IUserInfo } from "@open-ent/client";
 import { toast } from "react-toastify";
 
 import { t } from "~/i18n";

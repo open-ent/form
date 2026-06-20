@@ -1,4 +1,4 @@
-import { useEdificeClient } from "@edifice.io/react";
+import { useEdificeClient } from "@open-ent/react";
 import { createContext, FC, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 

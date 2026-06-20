@@ -87,7 +87,7 @@ export default ({ mode }: { mode: string }) => {
     setupFiles: "./src/tests/setup.ts",
     server: {
       deps: {
-        inline: ["@edifice.io/react"],
+        inline: ["@open-ent/react"],
       },
     },
   };
@@ -104,9 +104,19 @@ export default ({ mode }: { mode: string }) => {
     test,
     optimizeDeps,
     resolve: {
+      dedupe: [
+        "react",
+        "react-dom",
+        "@tanstack/react-query",
+        "react-i18next",
+        "i18next",
+        "@open-ent/client",
+        "@open-ent/react",
+        "@open-ent/bootstrap",
+      ],
       alias: {
         "@cgi-learning-hub": resolve(__dirname, "node_modules/@cgi-learning-hub",),
-        "@images": resolve(__dirname, "node_modules/@edifice.io/bootstrap/dist/images",),
+        "@images": resolve(__dirname, "node_modules/@open-ent/bootstrap/dist/images",),
         "@common": resolve(__dirname, "../../common/src/main/resources/ts/*",),
       },
     },

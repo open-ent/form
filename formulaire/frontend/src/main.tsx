@@ -12,9 +12,7 @@ import { Provider } from "react-redux";
 import { RouterProvider } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
-import { t } from "~/i18n";
-
-import { DEFAULT_THEME, TOAST_CONFIG } from "./core/constants";
+import { DEFAULT_THEME, FORMULAIRE, TOAST_CONFIG } from "./core/constants";
 import { globalOverrideStyles } from "./core/style/global";
 import { getOptions } from "./core/style/theme";
 import { useTheme } from "./hook/useTheme";
@@ -67,7 +65,7 @@ const App = () => {
       <Provider store={store}>
         <EdificeClientProvider
           params={{
-            app: t("formulaire.title"),
+            app: FORMULAIRE,
           }}
         >
           <EdificeThemeProvider>

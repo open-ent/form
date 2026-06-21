@@ -1,12 +1,14 @@
 import { odeServices } from "@open-ent/client";
 import { useEffect, useState } from "react";
 
+import { FORMULAIRE } from "../core/constants";
+
 export const useTheme = () => {
   const [isTheme1D, setIsTheme1D] = useState(false);
 
   useEffect(() => {
     const getIsTheme1D = async (): Promise<void> => {
-      const res = (await odeServices.conf().getConf("")).theme.is1d;
+      const res = (await odeServices.conf().getConf(FORMULAIRE)).theme.is1d;
       setIsTheme1D(res);
     };
 

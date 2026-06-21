@@ -76,6 +76,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.OPENENT_PACKAGES_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           TIPTAP_PRO_TOKEN: ${{ secrets.TIPTAP_PRO_TOKEN }}
+          HUSKY: 0
         run: |
           pnpm install --no-frozen-lockfile
           pnpm build
@@ -86,6 +87,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.OPENENT_PACKAGES_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           TIPTAP_PRO_TOKEN: ${{ secrets.TIPTAP_PRO_TOKEN }}
+          HUSKY: 0
         run: |
           pnpm install --no-frozen-lockfile
           pnpm build

@@ -174,7 +174,45 @@ jobs:
           GITHUB_ACTOR: ${{ github.actor }}
 
       - name: Build all fat JARs
-        run: mvn clean package -DskipTests -B -DbuildNumber=${GITHUB_SHA::8} -DscmBranch=${GITHUB_REF_NAME}
+        # Seul build de la chaîne : les steps Publish poussent ces jars tels quels via
+        # deploy:deploy-file. Ne jamais republier avec `mvn deploy`, qui rejouerait la
+        # phase package (donc shade) sans -DbuildNumber/-DscmBranch et repartirait sur
+        # les valeurs par défaut du MANIFEST.
+        env:
+          # head_ref : branche source sur les PR — ref_name vaudrait "42/merge".
+          # Sur un push de tag, ref_name est le nom du tag (convention de l'org).
+          SCM_BRANCH: ${{ github.head_ref || github.ref_name }}
+        run: |
+          mvn clean package -DskipTests -B \
+            -DbuildNumber="${GITHUB_SHA::8}" \
+            -DscmBranch="$SCM_BRANCH"
+
+      - name: Vérifier le MANIFEST des fat mods
+        # app-parent ne pose pas de manifestEntries sur le ManifestResourceTransformer
+        # de shade : le fat mod hérite du MANIFEST du jar fin produit par
+        # maven-jar-plugin. Sans ce garde-fou, une perte de commit/branche ne se voit
+        # qu'au déploiement.
+        run: |
+          set -euo pipefail
+          FOUND=0
+          for FAT in $(find . -path "*/target/*-fat.jar"); do
+            FOUND=$((FOUND + 1))
+            echo "── $(basename "$FAT")"
+            MANIFEST=$(unzip -p "$FAT" META-INF/MANIFEST.MF)
+            echo "$MANIFEST" | grep -E '^(SCM-|Implementation-Version|Build-Time)' || true
+            if ! echo "$MANIFEST" | grep -qE '^SCM-Commit-Id: *[0-9a-f]{7,}'; then
+              echo "::error::$(basename "$FAT") : SCM-Commit-Id absent ou non résolu"
+              exit 1
+            fi
+            if echo "$MANIFEST" | grep -qE '^SCM-Branch: *(unknown|UNKNOWN|\$\{)'; then
+              echo "::error::$(basename "$FAT") : SCM-Branch absent ou non résolu"
+              exit 1
+            fi
+          done
+          if [ "$FOUND" -eq 0 ]; then
+            echo "::error::aucun fat mod produit par le build"
+            exit 1
+          fi
 
       - name: Run tests
         if: github.event_name == 'pull_request'

@@ -183,7 +183,9 @@ jobs:
           # Sur un push de tag, ref_name est le nom du tag (convention de l'org).
           SCM_BRANCH: ${{ github.head_ref || github.ref_name }}
         run: |
-          mvn clean package -DskipTests -B \
+          # -Dmaven.test.skip=true (pas -DskipTests) : évite la compilation des tests, qui crashe
+          # sous JDK 21 via maven-scala-plugin:2.15.2 hérité d'app-parent (testCompile scala).
+          mvn clean package -Dmaven.test.skip=true -B \
             -DbuildNumber="${GITHUB_SHA::8}" \
             -DscmBranch="$SCM_BRANCH"
 

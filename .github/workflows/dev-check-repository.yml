@@ -1,98 +1,210 @@
 name: dev-check-repository
-on: [push]
-jobs:
-  build-node-test:
-    runs-on: ubuntu-latest
-    container:
-      image: opendigitaleducation/node:22-alpine-pnpm
-      options: --user root -v ${{ github.workspace }}:/home/node/:rw
-    steps:
-      - uses: actions/checkout@v1
-        # Test Angular Formulaire
-      - name: Run npm install
-        working-directory: ./formulaire/angular
-        run: yarn install
-      - name: Run build node with Gulp
-        working-directory: ./formulaire/angular
-        run: node_modules/gulp/bin/gulp.js build
-      - name: Run test
-        working-directory: ./formulaire/angular
-        run: yarn test --passWithNoTests
-      - name: Run build node sass
-        working-directory: ./formulaire/angular
-        run: yarn run build:sass
-        # Test Angular Formulaire-public
-      - name: Run npm install
-        working-directory: ./formulaire-public/angular
-        run: yarn install
-      - name: Run build node with Gulp
-        working-directory: ./formulaire-public/angular
-        run: node_modules/gulp/bin/gulp.js build
-      - name: Run test
-        working-directory: ./formulaire-public/angular
-        run: yarn test --passWithNoTests
-        # Test React Formulaire
-      - name: Update .npmrc with token
-        run: |
-          sed -i 's|${TIPTAP_PRO_TOKEN}|${{ secrets.TIPTAP_PRO_TOKEN }}|g' .npmrc
-        working-directory: ./formulaire/frontend
-      - name: Run pnpm install
-        working-directory: ./formulaire/frontend
-        run: pnpm install
-        env:
-          TIPTAP_PRO_TOKEN: ${{ secrets.TIPTAP_PRO_TOKEN }}
-      - name: Check Lint Fix and Typescript (ESLint)
-        working-directory: ./formulaire/frontend
-        run: pnpm run fix && pnpm run check-types
-      - name: Check Quality Code with (Prettier)
-        working-directory: ./formulaire/frontend
-        run: pnpm run format:check
-      - name: Run Build Vite
-        working-directory: ./formulaire/frontend
-        run: pnpm build
-      - name: Run tests
-        working-directory: ./formulaire/frontend
-        run: pnpm test
-        # Test React Formulaire-public
-      - name: Update .npmrc with token
-        run: |
-          sed -i 's|${TIPTAP_PRO_TOKEN}|${{ secrets.TIPTAP_PRO_TOKEN }}|g' .npmrc
-        working-directory: ./formulaire-public/frontend
-      - name: Run pnpm install
-        working-directory: ./formulaire-public/frontend
-        run: pnpm install
-        env:
-          TIPTAP_PRO_TOKEN: ${{ secrets.TIPTAP_PRO_TOKEN }}
-      - name: Check Lint Fix and Typescript (ESLint)
-        working-directory: ./formulaire-public/frontend
-        run: pnpm run fix && pnpm run check-types
-      - name: Check Quality Code with (Prettier)
-        working-directory: ./formulaire-public/frontend
-        run: pnpm run format:check
-      - name: Run Build Vite
-        working-directory: ./formulaire-public/frontend
-        run: pnpm build
-      - name: Run tests
-        working-directory: ./formulaire-public/frontend
-        run: pnpm test
 
-  build-maven-test:
+# Contrôle de build à chaque push : dérivé de build-and-publish.yml (mêmes frontends Angular/React
+# et même réacteur Maven), tronqué AVANT les steps de publication. Remplace l'ancien workflow legacy
+# (conteneurs node:22-alpine + maven:3.8.6-jdk-8) qui échouait systématiquement : le conteneur Maven
+# n'avait pas le settings GitHub Packages (org.entcore:*-patched irrésolvable) et le `pnpm install`
+# n'avait pas le PAT des paquets privés @open-ent.
+on: [push]
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  build:
+    name: Build (formulaire + formulaire-public)
     runs-on: ubuntu-latest
-    container:
-      image: maven:3.8.6-jdk-8
-      options: --user root -v ${{ github.workspace }}:/home/maven/:rw
     steps:
-      - uses: actions/checkout@v1
-      - name: Build common module
-        working-directory: ./common
-        run: mvn -Duser.home=/var/maven clean install
-        # Test Maven Formulaire
-      - name: Run build maven formulaire
-        run: mvn -Duser.home=/var/maven -pl formulaire/backend -am clean install
-      - name: Run maven test formulaire
-        run: mvn -Duser.home=/var/maven test
-        # Test Maven Formulaire-public
-      - name: Run build maven formulaire-public
-        run: mvn -Duser.home=/var/maven -pl formulaire-public/backend -am clean install
-      - name: Run maven test formulaire-public
-        run: mvn -Duser.home=/var/maven test
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 20
+
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 9
+
+      - uses: actions/setup-java@v6
+        with:
+          java-version: '21'
+          distribution: temurin
+          cache: maven
+
+      # --- Angular legacy frontends (gulp/webpack/yarn via pinned docker image) ---
+      - name: Build Angular frontend (formulaire)
+        working-directory: formulaire/angular
+        run: |
+          docker run --rm \
+            -v "$PWD:/home/node/app" \
+            -v "$PWD/../../common:/home/node/app/common" \
+            -w /home/node/app --user root \
+            opendigitaleducation/node:20-alpine-pnpm \
+            sh -c '
+              export COREPACK_ENABLE_STRICT=0
+              /usr/local/bin/yarn install --ignore-engines --network-timeout 600000
+              node_modules/gulp/bin/gulp.js build
+              npx -y sass@1.77.8 --load-path=node_modules/ --no-source-map src/sass/index.scss src/css/formulaire.css
+            '
+
+      - name: Build Angular frontend (formulaire-public)
+        working-directory: formulaire-public/angular
+        run: |
+          docker run --rm \
+            -v "$PWD:/home/node/app" \
+            -v "$PWD/../../common:/home/node/app/common" \
+            -w /home/node/app --user root \
+            opendigitaleducation/node:20-alpine-pnpm \
+            sh -c '
+              export COREPACK_ENABLE_STRICT=0
+              /usr/local/bin/yarn install --ignore-engines --network-timeout 600000
+              node_modules/gulp/bin/gulp.js build
+            '
+
+      # --- React frontends (pnpm / Vite) ---
+      - name: Build React frontend (formulaire)
+        working-directory: formulaire/frontend
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.OPENENT_PACKAGES_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          TIPTAP_PRO_TOKEN: ${{ secrets.TIPTAP_PRO_TOKEN }}
+          HUSKY: 0
+        run: |
+          pnpm install --no-frozen-lockfile
+          pnpm build
+
+      - name: Build React frontend (formulaire-public)
+        working-directory: formulaire-public/frontend
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.OPENENT_PACKAGES_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          TIPTAP_PRO_TOKEN: ${{ secrets.TIPTAP_PRO_TOKEN }}
+          HUSKY: 0
+        run: |
+          pnpm install --no-frozen-lockfile
+          pnpm build
+
+      # --- Inject static content into each backend (mirrors build.sh) ---
+      - name: Inject frontends into formulaire backend
+        run: |
+          set -eu
+          RES=formulaire/backend/src/main/resources
+          rm -rf $RES/public/css $RES/public/img $RES/public/js \
+                 $RES/public/mdi $RES/public/template $RES/view
+          mkdir -p $RES/public/css $RES/public/img $RES/public/js \
+                   $RES/public/mdi $RES/public/template $RES/view
+          # AngularJS static
+          cp -R formulaire/angular/src/css/*       $RES/public/css/
+          cp -R formulaire/angular/src/img/*       $RES/public/img/
+          cp -R formulaire/angular/src/dist/*      $RES/public/js/
+          cp -R formulaire/angular/src/mdi/*       $RES/public/mdi/
+          cp -R formulaire/angular/src/template/*  $RES/public/template/
+          cp -R formulaire/angular/src/view/*      $RES/view/
+          # .html files from ts folder (preserving tree)
+          ( cd formulaire/angular/src/ts && shopt -s globstar && \
+            rsync -R **/*.html ../../../backend/src/main/resources/public/ts --relative --no-implied-dirs ) || true
+          # React static
+          cp -R formulaire/frontend/dist/public/*  $RES/public/
+          cp -R formulaire/frontend/dist/img/*     $RES/public/img/
+          cp    formulaire/frontend/dist/index.html $RES/view/index.html
+
+      - name: Inject frontends into formulaire-public backend
+        run: |
+          set -eu
+          RES=formulaire-public/backend/src/main/resources
+          rm -rf $RES/public/img $RES/public/js \
+                 $RES/public/mdi $RES/public/template $RES/view
+          mkdir -p $RES/public/img $RES/public/js \
+                   $RES/public/mdi $RES/public/template $RES/view
+          # AngularJS static (no css for public)
+          cp -R formulaire-public/angular/src/img/*       $RES/public/img/
+          cp -R formulaire-public/angular/src/dist/*      $RES/public/js/
+          [ -d formulaire-public/angular/src/mdi ]      && cp -R formulaire-public/angular/src/mdi/*      $RES/public/mdi/      || true
+          [ -d formulaire-public/angular/src/template ] && cp -R formulaire-public/angular/src/template/* $RES/public/template/ || true
+          [ -d formulaire-public/angular/src/view ]     && cp -R formulaire-public/angular/src/view/*     $RES/view/            || true
+          ( cd formulaire-public/angular/src/ts && shopt -s globstar && \
+            rsync -R **/*.html ../../../backend/src/main/resources/public/ts --relative --no-implied-dirs ) || true
+          # React static
+          cp -R formulaire-public/frontend/dist/public/*  $RES/public/
+          cp -R formulaire-public/frontend/dist/img/*     $RES/public/img/ 2>/dev/null || true
+          cp    formulaire-public/frontend/dist/index.html $RES/view/index.html
+
+      # --- Maven build (reactor : common + formulaire + formulaire-public) ---
+      - name: Configure Maven pour GitHub Packages
+        run: |
+          mkdir -p ~/.m2
+          cat > ~/.m2/settings.xml << EOF
+          <settings>
+            <servers>
+              <server>
+                <id>github</id>
+                <username>$GITHUB_ACTOR</username>
+                <password>$GITHUB_TOKEN</password>
+              </server>
+            </servers>
+            <profiles>
+              <profile>
+                <id>github-packages</id>
+                <repositories>
+                  <repository>
+                    <id>github</id>
+                    <name>GitHub open-ent Packages</name>
+                    <url>https://maven.pkg.github.com/open-ent/entcore-v2</url>
+                    <releases><enabled>true</enabled></releases>
+                    <snapshots><enabled>true</enabled></snapshots>
+                  </repository>
+                </repositories>
+              </profile>
+            </profiles>
+            <activeProfiles>
+              <activeProfile>github-packages</activeProfile>
+            </activeProfiles>
+          </settings>
+          EOF
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ACTOR: ${{ github.actor }}
+
+      - name: Build all fat JARs
+        # Seul build de la chaîne : les steps Publish poussent ces jars tels quels via
+        # deploy:deploy-file. Ne jamais republier avec `mvn deploy`, qui rejouerait la
+        # phase package (donc shade) sans -DbuildNumber/-DscmBranch et repartirait sur
+        # les valeurs par défaut du MANIFEST.
+        env:
+          # head_ref : branche source sur les PR — ref_name vaudrait "42/merge".
+          # Sur un push de tag, ref_name est le nom du tag (convention de l'org).
+          SCM_BRANCH: ${{ github.head_ref || github.ref_name }}
+        run: |
+          # -Dmaven.test.skip=true (pas -DskipTests) : évite la compilation des tests, qui crashe
+          # sous JDK 21 via maven-scala-plugin:2.15.2 hérité d'app-parent (testCompile scala).
+          mvn clean package -Dmaven.test.skip=true -B \
+            -DbuildNumber="${GITHUB_SHA::8}" \
+            -DscmBranch="$SCM_BRANCH"
+
+      - name: Vérifier le MANIFEST des fat mods
+        # app-parent ne pose pas de manifestEntries sur le ManifestResourceTransformer
+        # de shade : le fat mod hérite du MANIFEST du jar fin produit par
+        # maven-jar-plugin. Sans ce garde-fou, une perte de commit/branche ne se voit
+        # qu'au déploiement.
+        run: |
+          set -euo pipefail
+          FOUND=0
+          for FAT in $(find . -path "*/target/*-fat.jar"); do
+            FOUND=$((FOUND + 1))
+            echo "── $(basename "$FAT")"
+            MANIFEST=$(unzip -p "$FAT" META-INF/MANIFEST.MF)
+            echo "$MANIFEST" | grep -E '^(SCM-|Implementation-Version|Build-Time)' || true
+            if ! echo "$MANIFEST" | grep -qE '^SCM-Commit-Id: *[0-9a-f]{7,}'; then
+              echo "::error::$(basename "$FAT") : SCM-Commit-Id absent ou non résolu"
+              exit 1
+            fi
+            if echo "$MANIFEST" | grep -qE '^SCM-Branch: *(unknown|UNKNOWN|\$\{)'; then
+              echo "::error::$(basename "$FAT") : SCM-Branch absent ou non résolu"
+              exit 1
+            fi
+          done
+          if [ "$FOUND" -eq 0 ]; then
+            echo "::error::aucun fat mod produit par le build"
+            exit 1
+          fi

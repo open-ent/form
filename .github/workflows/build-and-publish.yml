@@ -149,6 +149,11 @@ jobs:
                 <username>$GITHUB_ACTOR</username>
                 <password>$GITHUB_TOKEN</password>
               </server>
+              <server>
+                <id>pt-releases</id>
+                <username>$NEXUS_USER</username>
+                <password>$NEXUS_PASSWORD</password>
+              </server>
             </servers>
             <profiles>
               <profile>
@@ -172,6 +177,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ github.actor }}
+          NEXUS_USER: ${{ secrets.NEXUS_USER }}
+          NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
       - name: Build all fat JARs
         # Seul build de la chaîne : les steps Publish poussent ces jars tels quels via

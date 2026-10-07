@@ -56,7 +56,7 @@
     <gatlingHighchartsVersion>2.2.2</gatlingHighchartsVersion>
     <modPostgresVersion>2.2.0</modPostgresVersion>
     <modJsonSchemaValidatorVersion>2.2.0</modJsonSchemaValidatorVersion>
-    <entCoreLibsVersion>6.16.7-patched</entCoreLibsVersion>
+    <entCoreLibsVersion>6.16.8-patched</entCoreLibsVersion>
     <modMongoVersion>4.2.0</modMongoVersion>
   </properties>
   <dependencies>

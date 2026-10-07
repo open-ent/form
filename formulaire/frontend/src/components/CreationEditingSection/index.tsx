@@ -1,5 +1,5 @@
 import { Alert, Box, Button, Stack, TextField, Typography } from "@cgi-learning-hub/ui";
-import { Editor, EditorRef } from "@edifice.io/react/editor";
+import { Editor, EditorRef } from "@open-ent/react/editor";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import UndoRoundedIcon from "@mui/icons-material/UndoRounded";

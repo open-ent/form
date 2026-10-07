@@ -1,5 +1,5 @@
 import { Box, SearchInput, Typography } from "@cgi-learning-hub/ui";
-import { useEdificeClient } from "@edifice.io/react";
+import { useEdificeClient } from "@open-ent/react";
 import { useTheme } from "@mui/material";
 import { FC, useState } from "react";
 import { useTranslation } from "react-i18next";

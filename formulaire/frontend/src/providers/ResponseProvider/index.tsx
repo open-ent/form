@@ -1,4 +1,4 @@
-import { useEdificeClient } from "@edifice.io/react";
+import { useEdificeClient } from "@open-ent/react";
 import dayjs from "dayjs";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import { createContext, FC, useContext, useEffect, useMemo, useRef, useState } from "react";

@@ -1,10 +1,10 @@
-import "@edifice.io/bootstrap/dist/index.css";
+import "@open-ent/bootstrap/dist/index.css";
 import "react-toastify/dist/ReactToastify.css";
 
 import { ThemeProvider as ThemeProviderCGI, ThemeProviderProps } from "@cgi-learning-hub/theme";
 import { GlobalStyles } from "@cgi-learning-hub/ui";
-import { ERROR_CODE } from "@edifice.io/client";
-import { EdificeClientProvider, EdificeThemeProvider } from "@edifice.io/react";
+import { ERROR_CODE } from "@open-ent/client";
+import { EdificeClientProvider, EdificeThemeProvider } from "@open-ent/react";
 import { QueryCache, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import React, { useEffect } from "react";
@@ -13,11 +13,10 @@ import { Provider } from "react-redux";
 import { RouterProvider } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
-import { DEFAULT_THEME, TOAST_CONFIG } from "./core/constants";
+import { DEFAULT_THEME, FORMULAIRE_PUBLIC, TOAST_CONFIG } from "./core/constants";
 import { globalOverrideStyles } from "./core/style/global";
 import { getOptions } from "./core/style/theme";
 import { useTheme } from "./hook/useTheme";
-import { t } from "./i18n";
 import { GlobalProvider } from "./providers/GlobalProvider";
 import { router } from "./routes";
 import { store } from "./store";
@@ -74,7 +73,7 @@ const App = () => {
       <Provider store={store}>
         <EdificeClientProvider
           params={{
-            app: t("formulaire.public.title"),
+            app: FORMULAIRE_PUBLIC,
           }}
         >
           <EdificeThemeProvider>

@@ -1,4 +1,4 @@
-import { ID, ShareRight, ShareRightAction, ShareRightActionDisplayName } from "@edifice.io/client";
+import { ID, ShareRight, ShareRightAction, ShareRightActionDisplayName } from "@open-ent/client";
 
 import { IUserFormsRight } from "~/providers/ShareModalProvider/types";
 

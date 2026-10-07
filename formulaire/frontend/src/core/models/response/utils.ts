@@ -1,4 +1,4 @@
-import { IUserInfo } from "@edifice.io/client";
+import { IUserInfo } from "@open-ent/client";
 
 import { getOwnerNameWithUnderscore } from "~/core/utils";
 

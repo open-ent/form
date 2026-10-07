@@ -1,5 +1,5 @@
 import { Box, Typography } from "@cgi-learning-hub/ui";
-import { Editor, EditorRef } from "@edifice.io/react/editor";
+import { Editor, EditorRef } from "@open-ent/react/editor";
 import { FC, useEffect, useRef, useState } from "react";
 
 import { EDITOR_CONTENT_HTML } from "~/core/constants";

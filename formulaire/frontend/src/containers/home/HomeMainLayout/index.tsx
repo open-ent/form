@@ -1,6 +1,6 @@
 import { Box, SearchInput } from "@cgi-learning-hub/ui";
 import { DndContext, DragOverlay, pointerWithin } from "@dnd-kit/core";
-import { useEdificeClient } from "@edifice.io/react";
+import { useEdificeClient } from "@open-ent/react";
 import FolderIcon from "@mui/icons-material/Folder";
 import { Typography, useTheme } from "@mui/material";
 import { FC, useMemo, useState } from "react";

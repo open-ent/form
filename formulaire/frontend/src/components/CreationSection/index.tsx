@@ -11,7 +11,7 @@ import {
 } from "@cgi-learning-hub/ui";
 import { useDroppable } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { Editor } from "@edifice.io/react/editor";
+import { Editor } from "@open-ent/react/editor";
 import DragIndicatorRoundedIcon from "@mui/icons-material/DragIndicatorRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import FileCopyRoundedIcon from "@mui/icons-material/FileCopyRounded";

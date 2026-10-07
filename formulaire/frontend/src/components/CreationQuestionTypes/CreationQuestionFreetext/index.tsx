@@ -1,4 +1,4 @@
-import { Editor, EditorRef } from "@edifice.io/react/editor";
+import { Editor, EditorRef } from "@open-ent/react/editor";
 import { FC, useEffect, useRef } from "react";
 
 import { EDITOR_CONTENT_HTML, PROTECTED_VISIBILITY, PUBLIC_VISIBILITY } from "~/core/constants";

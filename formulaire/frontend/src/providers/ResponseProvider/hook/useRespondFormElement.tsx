@@ -1,4 +1,4 @@
-import { IUserInfo } from "@edifice.io/client";
+import { IUserInfo } from "@open-ent/client";
 import { Dispatch, SetStateAction } from "react";
 import { useDispatch } from "react-redux";
 

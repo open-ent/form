@@ -1,4 +1,4 @@
-import { odeServices } from "@edifice.io/client";
+import { odeServices } from "@open-ent/client";
 
 export const getApp = async (url: string): Promise<void> => {
   await odeServices.http().get(url);

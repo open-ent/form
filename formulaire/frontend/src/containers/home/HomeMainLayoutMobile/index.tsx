@@ -1,6 +1,6 @@
 import { Box, SearchInput, TreeView } from "@cgi-learning-hub/ui";
 import { DndContext } from "@dnd-kit/core";
-import { useEdificeClient } from "@edifice.io/react";
+import { useEdificeClient } from "@open-ent/react";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import { Typography, useTheme } from "@mui/material";

@@ -1,5 +1,5 @@
-import { odeServices, ShareRightWithVisibles } from "@edifice.io/client";
-import { useToggle } from "@edifice.io/react";
+import { odeServices, ShareRightWithVisibles } from "@open-ent/client";
+import { useToggle } from "@open-ent/react";
 import { Dispatch, useId, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";

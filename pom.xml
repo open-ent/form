@@ -49,11 +49,11 @@
     <revision>3.1.9-patched</revision>
     <entCoreVersion>6.16.14-patched</entCoreVersion>
     <toolsVersion>2.0.0-final</toolsVersion>
-    <junitVersion>5.1.0</junitVersion>
+    <junitVersion>5.14.4</junitVersion>
     <vertxCronTimerVersion>3.0.0</vertxCronTimerVersion>
     <powerMockVersion>2.0.2</powerMockVersion>
     <mockitoVersion>[2.0,3.0)</mockitoVersion>
-    <gatlingHighchartsVersion>2.2.2</gatlingHighchartsVersion>
+    <gatlingHighchartsVersion>2.3.1</gatlingHighchartsVersion>
     <modPostgresVersion>2.2.0</modPostgresVersion>
     <modJsonSchemaValidatorVersion>2.2.0</modJsonSchemaValidatorVersion>
     <entCoreLibsVersion>6.16.8-patched</entCoreLibsVersion>
@@ -166,7 +166,7 @@
             <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>
-                <version>1.2.7</version>
+                <version>1.8.0</version>
         <executions>
           <execution>
             <id>flatten</id>

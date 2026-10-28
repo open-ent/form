@@ -16,7 +16,7 @@ public class DefaultNeoService implements NeoService {
     public void getUsers(final JsonArray usersIds, Handler<Either<String, JsonArray>> handler) {
         JsonObject params = new JsonObject().put(PARAM_USERS_IDS, usersIds);
 
-        String queryUsersNeo4j = "MATCH (u:User) WHERE  u.id IN {usersIds} " +
+        String queryUsersNeo4j = "MATCH (u:User) WHERE  u.id IN $usersIds " +
                 "RETURN u.id AS id, u.id as username, u.email AS email, u.firstName AS firstname, u.lastName AS lastname";
 
         Neo4j.getInstance().execute(queryUsersNeo4j, params, Neo4jResult.validResultHandler(handler));
@@ -26,7 +26,7 @@ public class DefaultNeoService implements NeoService {
     public void getGroups(final JsonArray groupsIds, Handler<Either<String, JsonArray>> handler) {
         JsonObject params = new JsonObject().put(PARAM_GROUPS_IDS, groupsIds);
 
-        String queryGroupsNeo4j = "MATCH(g:Group)-[:IN]-(ug:User) WHERE g.id  IN {groupsIds} " +
+        String queryGroupsNeo4j = "MATCH(g:Group)-[:IN]-(ug:User) WHERE g.id  IN $groupsIds " +
                         "WITH g, collect({id: ug.id, username: ug.id, email: ug.email, firstname: ug.firstName, lastname: ug.lastName}) AS users " +
                         "return \"GR_\"+g.id AS id, g.name AS name, users";
 
@@ -38,9 +38,9 @@ public class DefaultNeoService implements NeoService {
         JsonObject params = new JsonObject()
                 .put(PARAM_BOOKMARKS_IDS, bookmarksIds);
 
-        String queryNeo4j = "WITH {bookmarksIds} AS shareBookmarkIds " +
+        String queryNeo4j = "WITH $bookmarksIds AS shareBookmarkIds " +
                 "UNWIND shareBookmarkIds AS shareBookmarkId MATCH (u:User)-[:HAS_SB]->(sb:ShareBookmark) " +
-                "UNWIND TAIL(sb[shareBookmarkId]) as vid MATCH (v:Visible {id : vid}) WHERE not(has(v.deleteDate)) " +
+                "UNWIND TAIL(sb[shareBookmarkId]) as vid MATCH (v:Visible {id : vid}) WHERE v.deleteDate IS NULL " +
                 "WITH {group: {id: \"SB\" + shareBookmarkId, name: HEAD(sb[shareBookmarkId]), users: COLLECT(DISTINCT{id: v.id, " +
                 "email: v.email, lastname: v.lastName, firstname: v.firstName, username: v.id})}}as sharedBookMark " +
                 "RETURN COLLECT(sharedBookMark) as bookmarks;";
@@ -53,12 +53,12 @@ public class DefaultNeoService implements NeoService {
         JsonObject params = new JsonObject()
                 .put(PARAM_BOOKMARKS_IDS, bookmarksIds);
 
-        String queryNeo4j = "WITH {bookmarksIds} AS shareBookmarkIds UNWIND shareBookmarkIds AS shareBookmarkId MATCH (u:User)-[:HAS_SB]->(sb:ShareBookmark) UNWIND TAIL(sb[shareBookmarkId]) as vid " +
-                "MATCH (v:Visible {id : vid})<-[:IN]-(us:User) WHERE not(has(v.deleteDate)) and v:ProfileGroup WITH {id: shareBookmarkId, name: HEAD(sb[shareBookmarkId]), users: COLLECT(DISTINCT{id: us.id, email: us.email, lastname: us.lastName, firstname: us.firstName, username: us.id})} as sharedBookMark " +
+        String queryNeo4j = "WITH $bookmarksIds AS shareBookmarkIds UNWIND shareBookmarkIds AS shareBookmarkId MATCH (u:User)-[:HAS_SB]->(sb:ShareBookmark) UNWIND TAIL(sb[shareBookmarkId]) as vid " +
+                "MATCH (v:Visible {id : vid})<-[:IN]-(us:User) WHERE v.deleteDate IS NULL and v:ProfileGroup WITH {id: shareBookmarkId, name: HEAD(sb[shareBookmarkId]), users: COLLECT(DISTINCT{id: us.id, email: us.email, lastname: us.lastName, firstname: us.firstName, username: us.id})} as sharedBookMark " +
                 "RETURN sharedBookMark " +
                 "UNION " +
-                "WITH {bookmarksIds} AS shareBookmarkIds UNWIND shareBookmarkIds AS shareBookmarkId MATCH (u:User)-[:HAS_SB]->(sb:ShareBookmark) UNWIND TAIL(sb[shareBookmarkId]) as vid " +
-                "MATCH (v:Visible {id : vid}) WHERE not(has(v.deleteDate)) and v:User WITH {id: shareBookmarkId, name: HEAD(sb[shareBookmarkId]), users: COLLECT(DISTINCT{id: v.id, email: v.email, lastname: v.lastName, firstname: v.firstName, username: v.id})} as sharedBookMark " +
+                "WITH $bookmarksIds AS shareBookmarkIds UNWIND shareBookmarkIds AS shareBookmarkId MATCH (u:User)-[:HAS_SB]->(sb:ShareBookmark) UNWIND TAIL(sb[shareBookmarkId]) as vid " +
+                "MATCH (v:Visible {id : vid}) WHERE v.deleteDate IS NULL and v:User WITH {id: shareBookmarkId, name: HEAD(sb[shareBookmarkId]), users: COLLECT(DISTINCT{id: v.id, email: v.email, lastname: v.lastName, firstname: v.firstName, username: v.id})} as sharedBookMark " +
                 "RETURN sharedBookMark";
 
         Neo4j.getInstance().execute(queryNeo4j, params, Neo4jResult.validResultHandler(handler));
@@ -70,7 +70,7 @@ public class DefaultNeoService implements NeoService {
     public void getIdsFromBookMarks(final JsonArray bookmarksIds, Handler<Either<String, JsonArray>> handler) {
         JsonObject params = new JsonObject().put(PARAM_BOOKMARKS_IDS, bookmarksIds);
 
-        String queryNeo4j = "WITH {bookmarksIds} AS shareBookmarkIds " +
+        String queryNeo4j = "WITH $bookmarksIds AS shareBookmarkIds " +
                 "UNWIND shareBookmarkIds AS shareBookmarkId " +
                 "MATCH (u:User)-[:HAS_SB]->(sb:ShareBookmark) " +
                 "UNWIND TAIL(sb[shareBookmarkId]) as vid MATCH (v:Visible {id : vid}) " +
@@ -86,9 +86,9 @@ public class DefaultNeoService implements NeoService {
                 .put(PARAM_USER_IDS, userIds)
                 .put(PARAM_GROUP_IDS, groupIds);
 
-        String queryUsersNeo4j = "MATCH(ug:User) WHERE ug.id IN {userIds} WITH ug, " +
+        String queryUsersNeo4j = "MATCH(ug:User) WHERE ug.id IN $userIds WITH ug, " +
                 "collect({id: ug.id, username: ug.displayName}) AS users return users ";
-        String queryGroupsNeo4j = "MATCH(g:Group)-[:IN]-(ug:User) WHERE g.id IN {groupIds} WITH g, " +
+        String queryGroupsNeo4j = "MATCH(g:Group)-[:IN]-(ug:User) WHERE g.id IN $groupIds WITH g, " +
                 "collect({id: ug.id, username: ug.displayName}) AS users return users ";
         String finalQuery = queryUsersNeo4j + "UNION " + queryGroupsNeo4j + ";";
 

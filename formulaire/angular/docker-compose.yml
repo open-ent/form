@@ -1,7 +1,13 @@
 services:
   node:
-    image: "opendigitaleducation/node:22-alpine-pnpm"
+    # node:26 (Debian) et non alpine : des dépendances d'entcore sont des URL git, et alpine
+    # n'a pas git. Ni yarn ni corepack dans l'image : build.sh installe yarn 1 à chaque
+    # lancement, dans un préfixe accessible à l'utilisateur non root.
+    image: "node:26"
     working_dir: /home/node/app
+    environment:
+      NPM_CONFIG_PREFIX: /tmp/npm-global
+      PATH: /tmp/npm-global/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     volumes:
       - ./:/home/node/app
       - ../../common:/home/node/app/common

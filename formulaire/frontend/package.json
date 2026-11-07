@@ -122,7 +122,7 @@
     "husky": "8.0.3",
     "i18next-browser-languagedetector": "7.2.1",
     "lint-staged": "14.0.1",
-    "nx": "19.6.0",
+    "nx": "22.7.10",
     "prettier": "3.0.3",
     "sass": "1.69.5",
     "typescript": "5.2.2",
